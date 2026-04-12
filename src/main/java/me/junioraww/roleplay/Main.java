@@ -1,12 +1,14 @@
 package me.junioraww.roleplay;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import me.junioraww.roleplay.commands.Roleplay;
 import me.junioraww.roleplay.listeners.Gifts;
 import me.junioraww.roleplay.listeners.Leash;
 import me.junioraww.roleplay.listeners.Pat;
 import me.junioraww.roleplay.utils.Config;
 import me.junioraww.roleplay.utils.Locale;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -28,6 +30,16 @@ public final class Main extends JavaPlugin {
   public void onEnable() {
     plugin = this;
 
+    var RPCommand = new Roleplay();
+    getCommand("roleplay").setExecutor(RPCommand);
+    getCommand("roleplay").setTabCompleter(RPCommand);
+
+    load();
+  }
+
+  public void reload() {
+    HandlerList.unregisterAll(this);
+    reloadConfig();
     load();
   }
 

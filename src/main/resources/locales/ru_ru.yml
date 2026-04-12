@@ -1,3 +1,5 @@
 gift: '<!i><white>Подарок'
 gift-empty: '<gold>Подарок пуст!'
 gift-lore: '<!i><gold>Собран: <white>%NAME%'
+unknown-arg: '<gold>Неизвестный аргумент!'
+reloaded: '<#00ff00>Успешная перезагрузка конфига!'

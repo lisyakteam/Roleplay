@@ -1,3 +1,5 @@
 gift: '<!i><white>Gift'
 gift-empty: "<gold>It's empty!"
 gift-lore: '<!i><gold>Packed by: <white>%NAME%'
+unknown-arg: '<gold>Unknown argument!'
+reloaded: '<#00ff00>Successful config reload!'
