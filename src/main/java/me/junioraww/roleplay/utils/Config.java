@@ -1,10 +1,12 @@
 package me.junioraww.roleplay.utils;
 
+import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Config {
   private static boolean patEnabled = true;
   private static double patParticleShift = 0;
+  private static Particle patParticle = Particle.HEART;
 
   private static boolean leashEnabled = true;
 
@@ -61,10 +63,15 @@ public class Config {
     return tntExplodesBreakBlocks;
   }
 
+  public static Particle getPatParticle() {
+    return patParticle;
+  }
+
   public static void init(FileConfiguration config) {
-    patParticleShift = config.getDouble("features.pat.particle-y", 0);
+    patParticleShift = config.getDouble("features.pat.particle-shift", 0);
     giftsEnabled = config.getBoolean("features.gifts.enabled", true);
     patEnabled = config.getBoolean("features.pat.enabled", true);
+    patParticle = Particle.valueOf(config.getString("features.pat.particle", "HEART"));
     leashEnabled = config.getBoolean("features.leash.enabled", true);
     tntExplodes = config.getBoolean("features.gifts.tnt.ignite", true);
     tntExplodesInstantly = config.getBoolean("features.gifts.tnt.instant", true);

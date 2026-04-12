@@ -4,6 +4,7 @@ features:
     enabled: true
   pat:
     enabled: true
+    particle: HEART
     particle-shift: 1.7 # shift particles on Y coordinate
   gifts:
     enabled: true
