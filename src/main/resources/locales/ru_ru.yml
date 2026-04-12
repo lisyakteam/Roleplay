@@ -1,0 +1,3 @@
+gift: '<!i><white>Подарок'
+gift-empty: '<gold>Подарок пуст!'
+gift-lore: '<!i><gold>Собран: <white>%NAME%'

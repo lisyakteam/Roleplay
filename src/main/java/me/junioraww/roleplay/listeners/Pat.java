@@ -1,5 +1,6 @@
 package me.junioraww.roleplay.listeners;
 
+import me.junioraww.roleplay.utils.Config;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +22,7 @@ public class Pat implements Listener {
 
         if (interacted.isSneaking()) particleLoc.add(0, 1, 0);
         else if (interacted.isSwimming()) particleLoc.add(0, 0.3, 0);
-        else particleLoc.add(0, 1.7, 0);
+        else particleLoc.add(0, Config.getPatParticleShift(), 0);
 
         interacted.getWorld().spawnParticle(Particle.HEART, particleLoc, 4, 0.3, 0, 0.3, 0);
         player.swingMainHand();

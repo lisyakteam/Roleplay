@@ -1,0 +1,17 @@
+locale: en_us
+features:
+  leash:
+    enabled: true
+  pat:
+    enabled: true
+    particle-shift: 1.7 # shift particles on Y coordinate
+  gifts:
+    enabled: true
+    add-lore: true
+    tnt:
+      ignite: true # set false to disable tnt explosion
+      accumulate: false # bigger explosion with each tnt
+      instant: true
+      power: 4 # works only if instant == true
+      break-blocks: true
+      cause-fire: false
