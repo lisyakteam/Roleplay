@@ -73,13 +73,8 @@ public class Gifts implements Listener {
     CraftingInventory inv = event.getInventory();
     ItemStack[] matrix = inv.getMatrix();
 
-    for (int i = 0; i < 9; i++) {
-      if (i == 4) continue;
-      ItemStack item = matrix[i];
-      if (item == null || item.getType() != giftMatrix[i]) {
-        inv.setResult(null);
-        return;
-      }
+    if (!isGiftRecipe(matrix)) {
+      return;
     }
 
     ItemStack itemInside = matrix[4] == null
@@ -116,6 +111,18 @@ public class Gifts implements Listener {
 
     gift.setItemMeta(meta);
     inv.setResult(gift);
+  }
+
+  private boolean isGiftRecipe(ItemStack[] matrix) {
+    for (int i = 0; i < 9; i++) {
+      if (i == 4) continue;
+
+      ItemStack item = matrix[i];
+      if (item == null || item.getType() != giftMatrix[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private boolean isGift(ItemStack item) {
