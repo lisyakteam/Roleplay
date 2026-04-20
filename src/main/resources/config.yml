@@ -2,6 +2,12 @@ locale: en_us
 features:
   leash:
     enabled: true
+    pull-sound: minecraft:item.lead.untied
+    pull-radius: 5
+    pull-power: 2
+    max-radius: 15
+    show-particles: true
+    play-sound: true
   pat:
     enabled: true
     particle: HEART

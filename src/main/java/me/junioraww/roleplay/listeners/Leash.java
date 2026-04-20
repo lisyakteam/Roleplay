@@ -22,9 +22,16 @@ import java.util.Map;
 
 public class Leash implements Listener {
   private final Map<String, Chicken> leashedPlayers = new HashMap<>();
+  private String pullSound;
+  private int pullRadiusSquared;
+  private int maxRadiusSquared;
+  private boolean playSound;
+  private boolean showParticles;
+  private int pullPower;
 
   public Leash() {
     startUpdateTask();
+    this.init();
   }
 
   private void setupTeam(Player player, Chicken hook) {
@@ -35,6 +42,18 @@ public class Leash implements Listener {
       collisionTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
     }
     collisionTeam.addEntities(player, hook);
+  }
+
+  public void init() {
+    pullSound = Main.getPlugin().getConfig().getString("features.leash.pull-sound", "minecraft:item.lead.untied");
+    int pullRadius = Main.getPlugin().getConfig().getInt("features.leash.pull-radius", 5);
+    int maxRadius = Main.getPlugin().getConfig().getInt("features.leash.max-radius", 15);
+    playSound = Main.getPlugin().getConfig().getBoolean("features.leash.play-sound", true);
+    showParticles = Main.getPlugin().getConfig().getBoolean("features.leash.show-particles", true);
+    pullPower = Main.getPlugin().getConfig().getInt("features.leash.pull-power", 2);
+
+    pullRadiusSquared = (int) Math.pow(pullRadius, 2);
+    maxRadiusSquared = (int) Math.pow(maxRadius, 2);
   }
 
   @EventHandler
@@ -49,7 +68,7 @@ public class Leash implements Listener {
       Chicken hook = leashedPlayers.remove(username);
       if (hook != null) {
         holder.give(new ItemStack(Material.LEAD, 1));
-        target.getWorld().playSound(target.getLocation(), "minecraft:item.lead.untied", 1f, 1f);
+        if (playSound) target.getWorld().playSound(target.getLocation(), pullSound, 1f, 1f);
         hook.remove();
       }
       event.setCancelled(true);
@@ -76,7 +95,7 @@ public class Leash implements Listener {
     hook.setLeashHolder(holder);
     leashedPlayers.put(username, hook);
 
-    target.getWorld().playSound(target.getLocation(), "minecraft:item.lead.tied", 1f, 1f);
+    target.getWorld().playSound(target.getLocation(), pullSound, 1f, 1f);
 
     if (holder.getGameMode() != org.bukkit.GameMode.CREATIVE) {
       item.setAmount(item.getAmount() - 1);
@@ -105,19 +124,25 @@ public class Leash implements Listener {
         }
 
         Entity holder = hook.getLeashHolder();
-        double distance = holder.getLocation().distance(target.getLocation());
+        double distanceSquared = holder.getLocation().distanceSquared(target.getLocation());
 
-        if (distance > 15) {
+        if (distanceSquared > maxRadiusSquared) {
           removeTeam(target, hook);
           removeLeash(hook);
           return true;
-        } else if (distance > 5.0 && localVelocityTimeout[0] < Bukkit.getCurrentTick()) {
+        } else if (distanceSquared > pullRadiusSquared && localVelocityTimeout[0] < Bukkit.getCurrentTick()) {
           Vector direction = holder.getLocation().toVector().subtract(target.getLocation().toVector()).normalize();
-          direction.multiply(2);
-          target.getWorld().playSound(target.getLocation(), "minecraft:item.lead.untied", 1f, 1f);
-          target.getWorld().spawnParticle(Particle.CLOUD, target.getLocation(), 32, 0.4, 0.8, 0.4, 0.05);
-          if (target.getVehicle() != null) target.getVehicle().setVelocity(direction); // UPD: check for vehicle (like horses)
+          direction.multiply(pullPower);
+
+          if (playSound)
+            target.getWorld().playSound(target.getLocation(), pullSound, 1f, 1f);
+          if (showParticles)
+            target.getWorld().spawnParticle(Particle.CLOUD, target.getLocation(), 32, 0.4, 0.8, 0.4, 0.05);
+
+          if (target.getVehicle() != null)
+            target.getVehicle().setVelocity(direction); // UPD: check for vehicle (like horses)
           else target.setVelocity(direction);
+
           localVelocityTimeout[0] = Bukkit.getCurrentTick() + 20;
         }
 
