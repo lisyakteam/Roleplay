@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.util.BoundingBox;
 
 public class Pat implements Listener {
   private static final NamespacedKey key = NamespacedKey.minecraft("roleplay");;
@@ -34,13 +35,13 @@ public class Pat implements Listener {
       Entity interacted = event.getRightClicked();
       EntityType type = interacted.getType();
 
-      if (!Config.patMobsAllowed() && type != EntityType.PLAYER) return;
-      if (type == EntityType.OCELOT) return;
+      if (interacted instanceof LivingEntity e) {
+        if (!Config.patMobsAllowed() && type != EntityType.PLAYER) return;
+        if (type == EntityType.OCELOT) return;
 
-      // TODO use ClientboundAttributesPacket
+        // TODO use ClientboundAttributesPacket
 
-      if (Config.patScaling()) {
-        if (interacted instanceof LivingEntity e) {
+        if (Config.patScaling()) {
           if (e.getAttribute(Attribute.SCALE) == null) e.registerAttribute(Attribute.SCALE);
           var scale = e.getAttribute(Attribute.SCALE);
 
@@ -61,16 +62,19 @@ public class Pat implements Listener {
             scale.removeModifier(cached[0]);
           }, 5L);
         }
+
+        Location particleLoc = interacted.getLocation().clone();
+
+        BoundingBox box = interacted.getBoundingBox();
+        double shiftY = box.getHeight();
+        double area = (box.getWidthX() + box.getWidthZ()) / 6;
+
+        if (interacted.isSneaking()) particleLoc.add(0, shiftY, 0);
+        else particleLoc.add(0, shiftY, 0);
+
+        interacted.getWorld().spawnParticle(Config.getPatParticle(), particleLoc, 4, area, 0, area, 0);
+        player.swingMainHand();
       }
-
-      Location particleLoc = interacted.getLocation().clone();
-      double shiftY = interacted.getBoundingBox().getHeight();
-
-      if (interacted.isSneaking()) particleLoc.add(0, shiftY, 0);
-      else particleLoc.add(0, shiftY, 0);
-
-      interacted.getWorld().spawnParticle(Config.getPatParticle(), particleLoc, 4, 0.3, 0, 0.3, 0);
-      player.swingMainHand();
     }
   }
 }
