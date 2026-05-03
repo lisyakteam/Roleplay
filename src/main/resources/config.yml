@@ -12,6 +12,7 @@ features:
     enabled: true
     particle: HEART
     allow-mobs: true
+    pat-scaling: true
   gifts:
     enabled: true
     add-lore: true

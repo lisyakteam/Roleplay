@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class Config {
   private static boolean patEnabled = true;
   private static boolean patMobs = true;
+  private static boolean patScaling = true;
   private static Particle patParticle = Particle.HEART;
 
   private static boolean leashEnabled = true;
@@ -21,6 +22,10 @@ public class Config {
 
   public static boolean patMobsAllowed() {
     return patMobs;
+  }
+
+  public static boolean patScaling() {
+    return patScaling;
   }
 
   public static boolean isGiftsEnabled() {
@@ -69,6 +74,7 @@ public class Config {
 
   public static void init(FileConfiguration config) {
     patMobs = config.getBoolean("features.pat.allow-mobs", true);
+    patScaling = config.getBoolean("features.pat.pat-scaling", true);
     giftsEnabled = config.getBoolean("features.gifts.enabled", true);
     patEnabled = config.getBoolean("features.pat.enabled", true);
     patParticle = Particle.valueOf(config.getString("features.pat.particle", "HEART"));
