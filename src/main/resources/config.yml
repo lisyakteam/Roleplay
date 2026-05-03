@@ -11,7 +11,7 @@ features:
   pat:
     enabled: true
     particle: HEART
-    particle-shift: 1.7 # shift particles on Y coordinate
+    allow-mobs: true
   gifts:
     enabled: true
     add-lore: true

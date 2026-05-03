@@ -1,7 +1,9 @@
 package me.junioraww.roleplay.listeners;
 
 import me.junioraww.roleplay.utils.Config;
-import org.bukkit.Particle;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,21 +14,23 @@ public class Pat implements Listener {
   @EventHandler
   public void playerClick(PlayerInteractEntityEvent event) {
     if (!event.getHand().getGroup().test(EquipmentSlot.HAND)) return;
-    var player = event.getPlayer();
+    Player player = event.getPlayer();
 
     if (player.isSneaking() && player.getActiveItem().isEmpty()) {
-      var other = event.getRightClicked();
+      Entity interacted = event.getRightClicked();
+      EntityType type = interacted.getType();
 
-      if (other instanceof Player interacted) {
-        var particleLoc = interacted.getLocation().clone();
+      if (!Config.patMobsAllowed() && type != EntityType.PLAYER) return;
+      if (type == EntityType.OCELOT) return;
 
-        if (interacted.isSneaking()) particleLoc.add(0, 1, 0);
-        else if (interacted.isSwimming()) particleLoc.add(0, 0.3, 0);
-        else particleLoc.add(0, Config.getPatParticleShift(), 0);
+      Location particleLoc = interacted.getLocation().clone();
+      double shiftY = interacted.getBoundingBox().getHeight();
 
-        interacted.getWorld().spawnParticle(Config.getPatParticle(), particleLoc, 4, 0.3, 0, 0.3, 0);
-        player.swingMainHand();
-      }
+      if (interacted.isSneaking()) particleLoc.add(0, shiftY, 0);
+      else particleLoc.add(0, shiftY, 0);
+
+      interacted.getWorld().spawnParticle(Config.getPatParticle(), particleLoc, 4, 0.3, 0, 0.3, 0);
+      player.swingMainHand();
     }
   }
 }
